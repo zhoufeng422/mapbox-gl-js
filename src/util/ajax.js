@@ -84,9 +84,9 @@ function isWorker() {
 export const getReferrer = isWorker() ?
     () => self.worker && self.worker.referrer :
     () => {
-        const origin = window.location.origin;
+        const origin = window.top.location.origin;
         if (origin && origin !== 'null' && origin !== 'file://') {
-            return origin + window.location.pathname;
+            return origin + window.top.location.pathname;
         }
     };
 
