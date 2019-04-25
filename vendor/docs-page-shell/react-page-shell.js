@@ -174,6 +174,9 @@ function PageHelmet() {
     name: "twitter:site",
     content: "@Mapbox"
   }), React.createElement("meta", {
+    name: "referrer",
+    content: "always"
+  }), React.createElement("meta", {
     property: "og:site_name",
     content: "Mapbox"
   }));
