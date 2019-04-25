@@ -5,7 +5,7 @@ function url(ext, options) {
     if (options && options.local && process.env.DEPLOY_ENV === 'local') {
         return prefixUrl(`/dist/mapbox-gl.${ext}`);
     } else {
-        return `https://dev-docs.tilestream.net/mapbox-gl-js/assets/mapbox-gl.${ext}`;
+        return `https://docs.tilestream.net/mapbox-gl-js/assets/mapbox-gl.${ext}`;
     }
 }
 
