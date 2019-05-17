@@ -1,7 +1,7 @@
 uniform lowp float u_device_pixel_ratio;
 
 varying vec2 v_width2;
-varying vec2 v_normal;
+varying float v_normal;
 varying float v_gamma_scale;
 
 #pragma mapbox: define highp vec4 color
@@ -14,7 +14,7 @@ void main() {
     #pragma mapbox: initialize lowp float opacity
 
     // Calculate the distance of the pixel from the line in pixels.
-    float dist = length(v_normal) * v_width2.s;
+    float dist = v_normal * v_width2.s;
 
     // Calculate the antialiasing fade factor. This is either when fading in
     // the line in case of an offset line (v_width2.t) or when fading out

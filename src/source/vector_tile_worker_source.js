@@ -8,6 +8,8 @@ import WorkerTile from './worker_tile';
 import { extend } from '../util/util';
 import performance from '../util/performance';
 
+import DEMData from '../data/dem_data';
+
 import type {
     WorkerSource,
     WorkerTileParameters,
@@ -130,15 +132,31 @@ class VectorTileWorkerSource implements WorkerSource {
             }
 
             workerTile.vectorTile = response.vectorTile;
-            workerTile.parse(response.vectorTile, this.layerIndex, this.actor, (err, result) => {
-                if (err || !result) return callback(err);
 
-                // Transferring a copy of rawTileData because the worker needs to retain its copy.
-                callback(null, extend({rawTileData: rawTileData.slice(0)}, result, cacheControl, resourceTiming));
+            const {x, y, z} = params.tileID.canonical;
+            const token = 'pk.eyJ1IjoibW91cm5lciIsImEiOiJWWnRiWG1VIn0.j6eccFHpE3Q04XPLI7JxbA';
+
+            fetch(`https://api.mapbox.com/v4/mapbox.terrain-rgb/${z}/${x}/${y}@2x.webp?access_token=${token}`).then(terrain => {
+
+                terrain.blob().then(imgBlob => {
+                    createImageBitmap(imgBlob).then((img) => {
+                        const offscreen = new OffscreenCanvas(512, 512);
+                        const ctx = offscreen.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        const terrainData = new DEMData('shit', ctx.getImageData(0, 0, 512, 512), 'mapbox');
+
+                        workerTile.parse(response.vectorTile, this.layerIndex, this.actor, (err, result) => {
+                            if (err || !result) return callback(err);
+
+                            // Transferring a copy of rawTileData because the worker needs to retain its copy.
+                            callback(null, extend({rawTileData: rawTileData.slice(0)}, result, cacheControl, resourceTiming));
+                        }, terrainData);
+
+                        this.loaded = this.loaded || {};
+                        this.loaded[uid] = workerTile;
+                    });
+                });
             });
-
-            this.loaded = this.loaded || {};
-            this.loaded[uid] = workerTile;
         });
     }
 

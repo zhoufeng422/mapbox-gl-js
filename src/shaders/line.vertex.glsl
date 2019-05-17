@@ -14,7 +14,7 @@ uniform mediump float u_ratio;
 uniform vec2 u_units_to_pixels;
 uniform lowp float u_device_pixel_ratio;
 
-varying vec2 v_normal;
+varying float v_normal;
 varying vec2 v_width2;
 varying float v_gamma_scale;
 varying highp float v_linesofar;
@@ -43,11 +43,11 @@ void main() {
 
     v_linesofar = (floor(a_data.z / 4.0) + a_data.w * 64.0) * 2.0;
 
-    vec2 pos = a_pos_normal.xy;
+    vec3 pos = a_pos_normal.xyz;
 
     // x is 1 if it's a round cap, 0 otherwise
     // y is 1 if the normal points up, and -1 if it points down
-    mediump vec2 normal = a_pos_normal.zw;
+    float normal = a_pos_normal.w;
     v_normal = normal;
 
     // these transformations used to be applied in the JS and native code bases.
@@ -69,10 +69,10 @@ void main() {
     // extrude vector points in another direction.
     mediump float u = 0.5 * a_direction;
     mediump float t = 1.0 - abs(u);
-    mediump vec2 offset2 = offset * a_extrude * scale * normal.y * mat2(t, -u, u, t);
+    mediump vec2 offset2 = offset * a_extrude * scale * normal * mat2(t, -u, u, t);
 
-    vec4 projected_extrude = u_matrix * vec4(dist / u_ratio, 0.0, 0.0);
-    gl_Position = u_matrix * vec4(pos + offset2 / u_ratio, 0.0, 1.0) + projected_extrude;
+    vec4 projected_extrude = u_matrix * vec4(dist / u_ratio, pos.z * 1.5, 0.0);
+    gl_Position = u_matrix * vec4(pos.xy + offset2 / u_ratio, pos.z * 1.5, 1.0) + projected_extrude;
 
     // calculate how much the perspective view squishes or stretches the extrude
     float extrude_length_without_perspective = length(dist);

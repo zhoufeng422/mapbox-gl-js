@@ -60,7 +60,7 @@ class WorkerTile {
         this.returnDependencies = !!params.returnDependencies;
     }
 
-    parse(data: VectorTile, layerIndex: StyleLayerIndex, actor: Actor, callback: WorkerTileCallback) {
+    parse(data: VectorTile, layerIndex: StyleLayerIndex, actor: Actor, callback: WorkerTileCallback, terrain) {
         this.status = 'parsing';
         this.data = data;
 
@@ -119,7 +119,7 @@ class WorkerTile {
                     sourceID: this.source
                 });
 
-                bucket.populate(features, options);
+                bucket.populate(features, options, terrain);
                 featureIndex.bucketLayerIDs.push(family.map((l) => l.id));
             }
         }
