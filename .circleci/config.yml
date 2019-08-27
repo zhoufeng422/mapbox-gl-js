@@ -95,7 +95,7 @@ workflows:
 
 defaults: &defaults
   docker:
-    - image: mbgl/80dbb7f452:linux
+    - image: circleci/node:10.16-browsers
   working_directory: ~/mapbox-gl-js
 
 jobs:
@@ -162,7 +162,6 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: apt-get update -yq && apt-get install -yq libxcomposite1 libxtst6 libnss3 libcups2 libxss1 libasound2 libatk1.0-0 libatk-bridge2.0-0 libpangocairo-1.0-0 libgtk-3-0
       - run: node bench/gl-stats.js
 
   test-flow:
