@@ -38,6 +38,7 @@ import PauseablePlacement from './pauseable_placement';
 import ZoomHistory from './zoom_history';
 import CrossTileSymbolIndex from '../symbol/cross_tile_symbol_index';
 import {validateCustomStyleLayer} from './style_layer/custom_style_layer';
+import {stubAbortController, restoreAbortController} from '../util/abort-controller-stub';
 
 // We're skipping validation errors with the `source.canvas` identifier in order
 // to continue to allow canvas sources to be added at runtime/updated in
@@ -364,8 +365,10 @@ class Style extends Evented {
     }
 
     /**
-     * Apply queued style updates in a batch and recalculate zoom-dependent paint properties.
-     */
+ * Apply queued style updates in a batch and recalculate zoom-dependent paint properties.
+ *
+ * @param parameters
+ */
     update(parameters: EvaluationParameters) {
         if (!this._loaded) {
             return;
@@ -1317,6 +1320,16 @@ class Style extends Evented {
 
     getResource(mapId: string, params: RequestParameters, callback: ResponseCallback<any>): Cancelable {
         return makeRequest(params, callback);
+    }
+
+    disableFetchCancellation() {
+        stubAbortController();
+        this.dispatcher.broadcast('mockAbortController', true);
+    }
+
+    enableFetchCancellation() {
+        restoreAbortController();
+        this.dispatcher.broadcast('mockAbortController', false);
     }
 }
 
