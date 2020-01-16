@@ -1079,12 +1079,13 @@ class Style extends Evented {
 
         const sourceResults = [];
         const serializedLayers = {};
-        for (let layer in this._layers) {
+        for (const layer in this._layers) {
             serializedLayers[layer] = this._layers[layer].serialize();
-        };
+        }
         console.log('this._layers', this._layers);
         console.log('serializedLayers', serializedLayers);
         // console.log('serialized layer', this._layers['tracks'].serialize());
+        console.log('souceCaches', this.sourceCaches);
         for (const id in this.sourceCaches) {
             if (params.layers && !includedSources[id]) continue;
             sourceResults.push(
@@ -1104,6 +1105,7 @@ class Style extends Evented {
             sourceResults.push(
                 queryRenderedSymbols(
                     this._layers,
+                    serializedLayers,
                     this.sourceCaches,
                     queryGeometry,
                     params,
