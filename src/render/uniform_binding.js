@@ -133,6 +133,12 @@ class UniformMatrix4f extends Uniform<Float32Array> {
     }
 }
 
+class Uniform4fv extends Uniform<Float32Array> {
+    set(v: Float32Array): void {
+        this.gl.uniform4fv(this.location, v);
+    }
+}
+
 export {
     Uniform,
     Uniform1i,
@@ -140,6 +146,7 @@ export {
     Uniform2f,
     Uniform3f,
     Uniform4f,
+    Uniform4fv,
     UniformColor,
     UniformMatrix4f
 };

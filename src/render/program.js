@@ -92,7 +92,11 @@ class Program<Us: UniformBindings> {
         for (let i = 0; i < numUniforms; i++) {
             const uniform = gl.getActiveUniform(this.program, i);
             if (uniform) {
-                uniformLocations[uniform.name] = gl.getUniformLocation(this.program, uniform.name);
+                // Strip ending '[0]' from array uniforms
+                let uniformName = uniform.name;
+                if (uniformName.endsWith("[0]"))
+                    uniformName = uniformName.replace("[0]", "");
+                uniformLocations[uniformName] = gl.getUniformLocation(this.program, uniform.name);
             }
         }
 
