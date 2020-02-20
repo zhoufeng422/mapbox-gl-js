@@ -90,7 +90,7 @@ class SourceCache extends Evented {
         this._source = createSource(id, options, dispatcher, this);
 
         this._tiles = {};
-        this._cache = new TileCache(0, this._unloadTile.bind(this));
+        this._cache = new TileCache(0, this);
         this._timers = {};
         this._cacheTimers = {};
         this._maxTileCacheSize = null;

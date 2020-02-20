@@ -204,6 +204,7 @@ class Actor {
     }
 
     remove() {
+        this.callbacks = {};
         this.invoker.remove();
         this.target.removeEventListener('message', this.receive, false);
     }

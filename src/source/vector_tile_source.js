@@ -130,17 +130,7 @@ class VectorTileSource extends Evented implements Source {
         };
         params.request.collectResourceTiming = this._collectResourceTiming;
 
-        if (!tile.actor || tile.state === 'expired') {
-            tile.actor = this.dispatcher.getActor();
-            tile.request = tile.actor.send('loadTile', params, done.bind(this));
-        } else if (tile.state === 'loading') {
-            // schedule tile reloading after it has been loaded
-            tile.reloadCallback = callback;
-        } else {
-            tile.request = tile.actor.send('reloadTile', params, done.bind(this));
-        }
-
-        function done(err, data) {
+        const done = (err, data) => {
             delete tile.request;
 
             if (tile.aborted)
@@ -165,6 +155,16 @@ class VectorTileSource extends Evented implements Source {
                 tile.reloadCallback = null;
             }
         }
+        if (!tile.actor || tile.state === 'expired') {
+            tile.actor = this.dispatcher.getActor();
+            tile.request = tile.actor.send('loadTile', params, done);
+        } else if (tile.state === 'loading') {
+            // schedule tile reloading after it has been loaded
+            tile.reloadCallback = callback;
+        } else {
+            tile.request = tile.actor.send('reloadTile', params, done);
+        }
+
     }
 
     abortTile(tile: Tile) {

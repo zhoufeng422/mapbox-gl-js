@@ -2020,8 +2020,8 @@ class Map extends Camera {
 
         this._canvas = DOM.create('canvas', 'mapboxgl-canvas', canvasContainer);
         this._canvas.style.position = 'absolute';
-        this._canvas.addEventListener('webglcontextlost', this._contextLost, false);
-        this._canvas.addEventListener('webglcontextrestored', this._contextRestored, false);
+        // this._canvas.addEventListener('webglcontextlost', this._contextLost, false);
+        // this._canvas.addEventListener('webglcontextrestored', this._contextRestored, false);
         this._canvas.setAttribute('tabindex', '0');
         this._canvas.setAttribute('aria-label', 'Map');
 
@@ -2227,12 +2227,12 @@ class Map extends Camera {
             const renderCPUTime = browser.now() - frameStartTime;
             extTimerQuery.endQueryEXT(extTimerQuery.TIME_ELAPSED_EXT, gpuTimer);
             setTimeout(() => {
-                const renderGPUTime = extTimerQuery.getQueryObjectEXT(gpuTimer, extTimerQuery.QUERY_RESULT_EXT) / (1000 * 1000);
-                extTimerQuery.deleteQueryEXT(gpuTimer);
-                this.fire(new Event('gpu-timing-frame', {
-                    cpuTime: renderCPUTime,
-                    gpuTime: renderGPUTime
-                }));
+                // const renderGPUTime = extTimerQuery.getQueryObjectEXT(gpuTimer, extTimerQuery.QUERY_RESULT_EXT) / (1000 * 1000);
+                // extTimerQuery.deleteQueryEXT(gpuTimer);
+                // this.fire(new Event('gpu-timing-frame', {
+                //     cpuTime: renderCPUTime,
+                //     gpuTime: renderGPUTime
+                // }));
             }, 50); // Wait 50ms to give time for all GPU calls to finish before querying
         }
 
@@ -2242,11 +2242,11 @@ class Map extends Camera {
             const frameLayerQueries = this.painter.collectGpuTimers();
 
             setTimeout(() => {
-                const renderedLayerTimes = this.painter.queryGpuTimers(frameLayerQueries);
+                // const renderedLayerTimes = this.painter.queryGpuTimers(frameLayerQueries);
 
-                this.fire(new Event('gpu-timing-layer', {
-                    layerTimes: renderedLayerTimes
-                }));
+                // this.fire(new Event('gpu-timing-layer', {
+                //     layerTimes: renderedLayerTimes
+                // }));
             }, 50); // Wait 50ms to give time for all GPU calls to finish before querying
         }
 
@@ -2301,6 +2301,12 @@ class Map extends Camera {
         removeNode(this._controlContainer);
         removeNode(this._missingCSSCanary);
         this._container.classList.remove('mapboxgl-map');
+
+        //Teardown input handlers
+        this.dragPan.teardown();
+        this.boxZoom.teardown();
+        this.dragRotate.teardown();
+        this.touchZoomRotate.teardown();
 
         PerformanceUtils.clearMetrics();
         this.fire(new Event('remove'));

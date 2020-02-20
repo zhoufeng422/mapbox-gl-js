@@ -1,6 +1,7 @@
 // @flow
 
 import {OverscaledTileID} from './tile_id';
+import type SourceCache from './source_cache';
 import type Tile from './tile';
 
 /**
@@ -19,9 +20,9 @@ class TileCache {
      * @param {number} max number of permitted values
      * @param {Function} onRemove callback called with items when they expire
      */
-    constructor(max: number, onRemove: (element: Tile) => void) {
+    constructor(max: number, sc: SourceCache) {
         this.max = max;
-        this.onRemove = onRemove;
+        this.sc = sc;
         this.reset();
     }
 
@@ -35,7 +36,7 @@ class TileCache {
         for (const key in this.data) {
             for (const removedData of this.data[key]) {
                 if (removedData.timeout) clearTimeout(removedData.timeout);
-                this.onRemove(removedData.value);
+                this.sc._unloadTile(removedData.value);
             }
         }
 
@@ -77,7 +78,7 @@ class TileCache {
 
         if (this.order.length > this.max) {
             const removedData = this._getAndRemoveByKey(this.order[0]);
-            if (removedData) this.onRemove(removedData);
+            if (removedData) this.sc._unloadTile(removedData);
         }
 
         return this;
@@ -164,7 +165,7 @@ class TileCache {
         if (this.data[key].length === 0) {
             delete this.data[key];
         }
-        this.onRemove(data.value);
+        this.sc._unloadTile(data.value);
         this.order.splice(this.order.indexOf(key), 1);
 
         return this;
@@ -182,7 +183,7 @@ class TileCache {
 
         while (this.order.length > this.max) {
             const removedData = this._getAndRemoveByKey(this.order[0]);
-            if (removedData) this.onRemove(removedData);
+            if (removedData) this.sc._unloadTile(removedData);
         }
 
         return this;
