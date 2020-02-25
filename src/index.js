@@ -25,6 +25,10 @@ import {setRTLTextPlugin, getRTLTextPluginStatus} from './source/rtl_text_plugin
 import WorkerPool from './util/worker_pool';
 import {clearTileCache} from './util/tile_request_cache';
 import {PerformanceUtils} from './util/performance';
+/**
+ * @author： zhoufeng422
+ */
+import Projections from './geo/projections';
 
 const exported = {
     version,
@@ -46,6 +50,10 @@ const exported = {
     MercatorCoordinate,
     Evented,
     config,
+    /**
+     * @author： zhoufeng422
+     */
+    Projections,
 
     /**
      * Gets and sets the map's [access token](https://www.mapbox.com/help/define-access-token/).

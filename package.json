@@ -2,6 +2,7 @@
   "name": "mapbox-gl",
   "description": "A WebGL interactive maps library",
   "version": "1.8.1",
+  "types": "index.d.ts",
   "main": "dist/mapbox-gl.js",
   "style": "dist/mapbox-gl.css",
   "license": "SEE LICENSE IN LICENSE.txt",
@@ -157,7 +158,8 @@
     "dist/",
     "flow-typed/",
     "src/",
-    ".flowconfig"
+    ".flowconfig",
+    "index.d.ts"
   ],
   "publishConfig": {
     "registry": "http://cagmss.com:8091/repository/npm-yz/"
