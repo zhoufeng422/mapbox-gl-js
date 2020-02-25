@@ -3,8 +3,17 @@
 import LngLat from './lng_lat';
 import LngLatBounds from './lng_lat_bounds';
 import MercatorCoordinate, {mercatorXfromLng, mercatorYfromLat, mercatorZfromAltitude} from './mercator_coordinate';
+/**
+ * @author: zhoufeng422
+ */
+import { setProjections } from './mercator_coordinate';
+import Projections from './projections';
 import Point from '@mapbox/point-geometry';
 import {wrap, clamp} from '../util/util';
+/**
+ * @author: zhoufeng422
+ */
+import { extend, pick } from '../util/util';
 import {number as interpolate} from '../style-spec/util/interpolate';
 import EXTENT from '../data/extent';
 import {vec4, mat4, mat2, vec2} from 'gl-matrix';
@@ -53,7 +62,7 @@ class Transform {
     _posMatrixCache: {[string]: Float32Array};
     _alignedPosMatrixCache: {[string]: Float32Array};
 
-    constructor(minZoom: ?number, maxZoom: ?number, minPitch: ?number, maxPitch: ?number, renderWorldCopies: boolean | void) {
+    constructor(minZoom: ?number, maxZoom: ?number, minPitch: ?number, maxPitch: ?number, renderWorldCopies: boolean | void, projection: ?Projections) {
         this.tileSize = 512; // constant
         this.maxValidLatitude = 85.051129; // constant
 
@@ -76,6 +85,21 @@ class Transform {
         this._unmodified = true;
         this._posMatrixCache = {};
         this._alignedPosMatrixCache = {};
+
+        /**
+         * @author: zhoufeng422
+         */
+        if (projection) {
+            setProjections(projection);
+            extend(this, pick(projection, [
+                'XYFromLngLat',
+                'LngLatFromXY',
+                'project',
+                'unproject',
+                'latRange',
+                'defName'
+            ]));
+        }
     }
 
     clone(): Transform {
@@ -557,17 +581,42 @@ class Transform {
         const size = this.size,
             unmodified = this._unmodified;
 
+        // if (this.latRange) {
+        //     const latRange = this.latRange;
+        //     minY = mercatorYfromLat(latRange[1]) * this.worldSize;
+        //     maxY = mercatorYfromLat(latRange[0]) * this.worldSize;
+        //     sy = maxY - minY < size.y ? size.y / (maxY - minY) : 0;
+        // }
+
+        // if (this.lngRange) {
+        //     const lngRange = this.lngRange;
+        //     minX = mercatorXfromLng(lngRange[0]) * this.worldSize;
+        //     maxX = mercatorXfromLng(lngRange[1]) * this.worldSize;
+        //     sx = maxX - minX < size.x ? size.x / (maxX - minX) : 0;
+        // }
+
+        /**
+         * @author: zhoufeng422
+         */
+        const ul = this.project(LngLat.convert([
+            this.lngRange ? this.lngRange[0] : 0,
+            this.latRange ? this.latRange[1] : 0
+        ]));
+
+        const lr = this.project(LngLat.convert([
+            this.lngRange ? this.lngRange[1] : 0,
+            this.latRange ? this.latRange[0] : 0
+        ]));
+
         if (this.latRange) {
-            const latRange = this.latRange;
-            minY = mercatorYfromLat(latRange[1]) * this.worldSize;
-            maxY = mercatorYfromLat(latRange[0]) * this.worldSize;
+            minY = ul.y;
+            maxY = lr.y;
             sy = maxY - minY < size.y ? size.y / (maxY - minY) : 0;
         }
 
         if (this.lngRange) {
-            const lngRange = this.lngRange;
-            minX = mercatorXfromLng(lngRange[0]) * this.worldSize;
-            maxX = mercatorXfromLng(lngRange[1]) * this.worldSize;
+            minX = ul.x;
+            maxX = lr.x;
             sx = maxX - minX < size.x ? size.x / (maxX - minX) : 0;
         }
 

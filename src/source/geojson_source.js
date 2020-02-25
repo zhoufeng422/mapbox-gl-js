@@ -15,6 +15,11 @@ import type Actor from '../util/actor';
 import type {Callback} from '../types/callback';
 import type {GeoJSON, GeoJSONFeature} from '@mapbox/geojson-types';
 import type {GeoJSONSourceSpecification, PromoteIdSpecification} from '../style-spec/types';
+/**
+ * @author: zhofueng422
+ */
+import Projections from '../geo/projections';
+import { getProjections } from '../geo/mercator_coordinate';
 
 /**
  * A source containing GeoJSON.
@@ -82,6 +87,10 @@ class GeoJSONSource extends Evented implements Source {
     _collectResourceTiming: boolean;
     _resourceTiming: Array<PerformanceResourceTiming>;
     _removed: boolean;
+    /**
+     * @author: zhoufeng422
+     */
+    project: ?Projections;
 
     /**
      * @private
@@ -118,6 +127,14 @@ class GeoJSONSource extends Evented implements Source {
         this.promoteId = options.promoteId;
 
         const scale = EXTENT / this.tileSize;
+
+        /**
+         * @author: zhoufeng422
+         */
+        const proj = getProjections();
+        if (proj && proj.isTransform === true) {
+            this.project = proj;
+        }
 
         // sent to the worker, along with `url: ...` or `data: literal geojson`,
         // so that it can load/parse/index the geojson data
@@ -255,6 +272,13 @@ class GeoJSONSource extends Evented implements Source {
             options.request.collectResourceTiming = this._collectResourceTiming;
         } else {
             options.data = JSON.stringify(data);
+        }
+
+        /**
+         * @author: zhoufeng422
+         */
+        if (this.project) {
+            options.projection = this.project.defName;
         }
 
         // target {this.type}.loadData rather than literally geojson.loadData,

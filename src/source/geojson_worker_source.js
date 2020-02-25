@@ -32,7 +32,11 @@ export type LoadGeoJSONParameters = {
     cluster: boolean,
     superclusterOptions?: Object,
     geojsonVtOptions?: Object,
-    clusterProperties?: Object
+    clusterProperties?: Object,
+    /**
+     * @author: zhoufeng422
+     */
+    projection?: string
 };
 
 export type LoadGeoJSON = (params: LoadGeoJSONParameters, callback: ResponseCallback<Object>) => void;
@@ -170,6 +174,13 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
                 return callback(new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`));
             } else {
                 rewind(data, true);
+
+                /**
+                 * @author: zhoufeng422
+                 */
+                if (params.projection) {
+                    params.geojsonVtOptions.projection = params.projection;
+                }
 
                 try {
                     this._geoJSONIndex = params.cluster ?

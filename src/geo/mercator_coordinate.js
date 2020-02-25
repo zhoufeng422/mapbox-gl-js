@@ -1,7 +1,8 @@
 // @flow
 
-import LngLat, {earthRadius} from '../geo/lng_lat';
-import type {LngLatLike} from '../geo/lng_lat';
+import LngLat, { earthRadius } from '../geo/lng_lat';
+import type { LngLatLike } from '../geo/lng_lat';
+import Projections from './projections';
 
 /*
  * The average circumference of the world in meters.
@@ -55,6 +56,18 @@ export function mercatorScale(lat: number) {
 }
 
 /**
+ * @author: zhoufeng422
+ */
+let _proj: Projections;
+export function setProjections(proj: Projections) {
+    _proj = proj;
+}
+
+export function getProjections() {
+    return _proj;
+}
+
+/**
  * A `MercatorCoordinate` object represents a projected three dimensional position.
  *
  * `MercatorCoordinate` uses the web mercator projection ([EPSG:3857](https://epsg.io/3857)) with slightly different units:
@@ -100,10 +113,23 @@ class MercatorCoordinate {
     static fromLngLat(lngLatLike: LngLatLike, altitude: number = 0) {
         const lngLat = LngLat.convert(lngLatLike);
 
-        return new MercatorCoordinate(
+        /**
+         * @author: zhoufeng422
+         */
+        const proj = getProjections();
+
+        if (proj && proj.isTransform === true) {
+            const pt = proj.XYFromLngLat(lngLat.lng, lngLat.lat);
+            return new MercatorCoordinate(
+                pt.x,
+                pt.y,
+                mercatorZfromAltitude(altitude, lngLat.lat));
+        } else {
+            return new MercatorCoordinate(
                 mercatorXfromLng(lngLat.lng),
                 mercatorYfromLat(lngLat.lat),
                 mercatorZfromAltitude(altitude, lngLat.lat));
+        }
     }
 
     /**
@@ -115,9 +141,17 @@ class MercatorCoordinate {
      * var latLng = coord.toLngLat(); // LngLat(0, 0)
      */
     toLngLat() {
-        return new LngLat(
+        /**
+         * @author: zhoufeng422
+         */
+        const proj = getProjections();
+        if (proj && proj.isTransform) {
+            return proj.LngLatFromXY(this.x, this.y);
+        } else {
+            return new LngLat(
                 lngFromMercatorX(this.x),
                 latFromMercatorY(this.y));
+        }
     }
 
     /**
