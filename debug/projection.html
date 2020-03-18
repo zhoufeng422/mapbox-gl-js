@@ -154,7 +154,7 @@
             container: 'map',
             zoom: 3,
             center: [105.36, 32.85],
-            style: 'http://192.168.99.100:8081/styles/nx_albers/style.json',//,style
+            style: 'http://cagmss.com:81/styles/nx_albers/style.json',//,style
             // style: 'http://cagmss.com:81/styles/nx/style.json',
             projection: projection,
             hash: true
@@ -230,6 +230,21 @@
                     // "text-anchor": "top"
                 }
             });
+        
+            const sId = "fjpoly";
+            map.addSource(sId, {
+                type: 'geojson',
+                data: 'fj_city.json'
+            });
+
+            map.addLayer({
+                'id': sId,
+                'source': sId,
+                'type': 'fill',
+                'paint':{
+                    'fill-color':'#1890ff'
+                }
+            });
         });
 
         map.addControl(new mapboxgl.NavigationControl());
@@ -237,6 +252,8 @@
 
         map.on('click', function (e) {
             if (e.originalEvent.shiftKey) return;
+            const feats = map.querySourceFeatures('fjpoly');
+            console.log(feats);
             (new mapboxgl.Popup())
                 .setLngLat(map.unproject(e.point))
                 .setHTML("<h1>Hello World!</h1>" + JSON.stringify(e.point) + "<br />" + JSON.stringify(map.unproject(e.point)))

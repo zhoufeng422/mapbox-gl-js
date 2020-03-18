@@ -2,8 +2,13 @@
 
 import Point from '@mapbox/point-geometry';
 
-import mvt from '@mapbox/vector-tile';
-const toGeoJSON = mvt.VectorTileFeature.prototype.toGeoJSON;
+/**
+ * @author: zhoufeng422
+ */
+// import mvt from '@mapbox/vector-tile';
+// const toGeoJSON = mvt.VectorTileFeature.prototype.toGeoJSON;
+import YzVectorTileFeature from '../geo/yzvectortilefeature';
+const toGeoJSON = YzVectorTileFeature.prototype.toGeoJSON;
 import EXTENT from '../data/extent';
 
 // The feature type used by geojson-vt and supercluster. Should be extracted to
