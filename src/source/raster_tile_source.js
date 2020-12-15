@@ -119,7 +119,13 @@ class RasterTileSource extends Evented implements Source {
                 callback(null);
             } else if (err) {
                 tile.state = 'errored';
-                callback(err);
+                /**
+                 * @author: zhoufeng422
+                 */
+                // callback(err);
+                // If that's the one being requested, set it up with the image; 
+                // otherwise, mark the tile as `errored` to indicate that we have no data for it.
+                callback(null);
             } else if (img) {
                 if (this.map._refreshExpiredTiles) tile.setExpiryData(img);
                 delete (img: any).cacheControl;

@@ -161,90 +161,91 @@
         });
 
         map.on('load', () => {
-            map.addSource("overlay", {
-                "type": "image",
-                "url": "http://localhost:9966/debug/projection.png",
-                "coordinates": [
-                    // [79.3425659136, 52.85648743],
-                    // [138.61433081, 52.85648743],
-                    // [138.61433081, 13.9020680279],
-                    // [79.3425659136, 13.9020680279]
-                    // [63.2434347615, 50.6888687977],
-                    // [139.358081995, 52.6812441072],
-                    // [126.230984821, 15.0500346394],
-                    // [78.871157332, 13.7652140709]
-                    [48.2, 52.3],
-                    [160.0, 53.0],
-                    [135.8, 7.5],
-                    [73.0, 7.0]
-                    // [-2882702 - 55500, 2376777],
-                    // [2312529 + 55500, 2376777],
-                    // [2312529 + 55500, -1935070],
-                    // [-2882702 - 55500, -1935070]
-                ]
-            });
-
-            // map.addLayer({
-            //     "id": "overlay",
-            //     "source": "overlay",
-            //     "type": "raster",
-            //     "paint": { "raster-opacity": 0.85 }
+            console.warn('load')
+            // map.addSource("overlay", {
+            //     "type": "image",
+            //     "url": "http://localhost:9966/debug/projection.png",
+            //     "coordinates": [
+            //         // [79.3425659136, 52.85648743],
+            //         // [138.61433081, 52.85648743],
+            //         // [138.61433081, 13.9020680279],
+            //         // [79.3425659136, 13.9020680279]
+            //         // [63.2434347615, 50.6888687977],
+            //         // [139.358081995, 52.6812441072],
+            //         // [126.230984821, 15.0500346394],
+            //         // [78.871157332, 13.7652140709]
+            //         [48.2, 52.3],
+            //         [160.0, 53.0],
+            //         [135.8, 7.5],
+            //         [73.0, 7.0]
+            //         // [-2882702 - 55500, 2376777],
+            //         // [2312529 + 55500, 2376777],
+            //         // [2312529 + 55500, -1935070],
+            //         // [-2882702 - 55500, -1935070]
+            //     ]
             // });
 
-            map.addLayer({
-                "id": "points",
-                "type": "symbol",
-                "source": {
-                    "type": "geojson",
-                    "data": {
-                        "type": "FeatureCollection",
-                        "features": [{
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [104.5, 34.5]
-                            },
-                            "properties": {
-                                "title": "Mapbox DC",
-                                "icon": "monument"
-                            }
-                        }, {
-                            "type": "Feature",
-                            "geometry": {
-                                "type": "Point",
-                                "coordinates": [-122.414, 37.776]
-                            },
-                            "properties": {
-                                "title": "Mapbox SF",
-                                "icon": "harbor"
-                            }
-                        }]
-                    }
-                },
-                "layout": {
-                    // "icon-image": "{icon}-15",
-                    "text-field": "{title}",
-                    "text-font": [ "KlokanTech Noto Sans CJK Bold"],
-                    "text-allow-overlap": true,
-                    // "text-offset": [0, 0.6],
-                    // "text-anchor": "top"
-                }
-            });
-        
-            const sId = "fjpoly";
-            map.addSource(sId, {
-                type: 'geojson',
-                data: 'fj_city.json'
-            });
+            // // map.addLayer({
+            // //     "id": "overlay",
+            // //     "source": "overlay",
+            // //     "type": "raster",
+            // //     "paint": { "raster-opacity": 0.85 }
+            // // });
 
-            map.addLayer({
-                'id': sId,
-                'source': sId,
-                'type': 'fill',
-                'paint':{
-                    'fill-color':'#1890ff'
-                }
-            });
+            // map.addLayer({
+            //     "id": "points",
+            //     "type": "symbol",
+            //     "source": {
+            //         "type": "geojson",
+            //         "data": {
+            //             "type": "FeatureCollection",
+            //             "features": [{
+            //                 "type": "Feature",
+            //                 "geometry": {
+            //                     "type": "Point",
+            //                     "coordinates": [104.5, 34.5]
+            //                 },
+            //                 "properties": {
+            //                     "title": "Mapbox DC",
+            //                     "icon": "monument"
+            //                 }
+            //             }, {
+            //                 "type": "Feature",
+            //                 "geometry": {
+            //                     "type": "Point",
+            //                     "coordinates": [-122.414, 37.776]
+            //                 },
+            //                 "properties": {
+            //                     "title": "Mapbox SF",
+            //                     "icon": "harbor"
+            //                 }
+            //             }]
+            //         }
+            //     },
+            //     "layout": {
+            //         // "icon-image": "{icon}-15",
+            //         "text-field": "{title}",
+            //         "text-font": [ "KlokanTech Noto Sans CJK Bold"],
+            //         "text-allow-overlap": true,
+            //         // "text-offset": [0, 0.6],
+            //         // "text-anchor": "top"
+            //     }
+            // });
+        
+            // const sId = "fjpoly";
+            // map.addSource(sId, {
+            //     type: 'geojson',
+            //     data: 'fj_city.json'
+            // });
+
+            // map.addLayer({
+            //     'id': sId,
+            //     'source': sId,
+            //     'type': 'fill',
+            //     'paint':{
+            //         'fill-color':'#1890ff'
+            //     }
+            // });
         });
 
         map.addControl(new mapboxgl.NavigationControl());

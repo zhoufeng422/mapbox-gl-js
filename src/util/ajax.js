@@ -273,10 +273,6 @@ function arrayBufferToImage(data: ArrayBuffer, callback: (err: ?Error, image: ?H
 }
 
 function arrayBufferToImageBitmap(data: ArrayBuffer, callback: (err: ?Error, image: ?ImageBitmap) => void) {
-    /**
-     * @author: zhoufeng422
-     */
-    if (data.byteLength == 0) return;
     const blob: Blob = new window.Blob([new Uint8Array(data)], {type: 'image/png'});
     window.createImageBitmap(blob).then((imgBitmap) => {
         callback(null, imgBitmap);
